@@ -1,4 +1,4 @@
-import type { Types } from '@cornerstonejs/core';
+import { eventTarget, triggerEvent, type Types } from '@cornerstonejs/core';
 import {
   drawHandles as drawHandlesSvg,
   drawPolyline as drawPolylineSvg,
@@ -10,6 +10,7 @@ import type { PlanarFreehandROIAnnotation } from '../../../types/ToolSpecificAnn
 import type { StyleSpecifier } from '../../../types/AnnotationStyle';
 import type { SVGDrawingHelper } from '../../../types';
 import getContourHolesDataCanvas from '../../../utilities/contours/getContourHolesDataCanvas';
+import { Events } from '../../../enums';
 
 const { pointsAreWithinCloseContourProximity } = polyline;
 
@@ -285,6 +286,8 @@ function renderContourBeingDrawn(
   svgDrawingHelper: SVGDrawingHelper,
   annotation: PlanarFreehandROIAnnotation
 ): void {
+  const { data } = annotation;
+  data.isMeasurementDirty = true;
   const options = this._getRenderingOptions(enabledElement, annotation);
 
   const { allowOpenContours } = this.configuration;
@@ -335,6 +338,9 @@ function renderContourBeingDrawn(
       );
     }
   }
+
+  const eventType = Events.ANNOTATION_POINT_MODIFIED;
+  triggerEvent(eventTarget, eventType, { annotation });
 }
 
 /**
@@ -375,6 +381,8 @@ function renderClosedContourBeingEdited(
     allContours,
     options
   );
+  const eventType = Events.ANNOTATION_POINT_MODIFIED;
+  triggerEvent(eventTarget, eventType, { annotation });
 }
 
 /**
@@ -405,6 +413,8 @@ function renderOpenContourBeingEdited(
     fusedCanvasPoints,
     options
   );
+  const eventType = Events.ANNOTATION_POINT_MODIFIED;
+  triggerEvent(eventTarget, eventType, { annotation });
 }
 
 /**

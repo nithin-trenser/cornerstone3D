@@ -3,6 +3,8 @@ import {
   getEnabledElement,
   utilities as csUtils,
   getEnabledElementByViewportId,
+  triggerEvent,
+  eventTarget,
 } from '@cornerstonejs/core';
 import type { Types } from '@cornerstonejs/core';
 import { AnnotationTool } from '../base';
@@ -449,6 +451,9 @@ class AngleTool extends AnnotationTool {
       worldPosition[2] += worldPosDelta[2];
 
       textBox.hasMoved = true;
+
+      const eventType = Events.ANNOTATION_TEXT_BOX_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     } else if (handleIndex === undefined) {
       // Drag mode - moving handle
       const { deltaPoints } = eventDetail as EventTypes.MouseDragEventDetail;
@@ -462,6 +467,8 @@ class AngleTool extends AnnotationTool {
         point[2] += worldPosDelta[2];
       });
       annotation.invalidated = true;
+      const eventType = Events.ANNOTATION_POINT_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     } else {
       // Move mode - after double click, and mouse move to draw
       const { currentPoints } = eventDetail;
@@ -469,6 +476,8 @@ class AngleTool extends AnnotationTool {
 
       data.handles.points[handleIndex] = [...worldPos];
       annotation.invalidated = true;
+      const eventType = Events.ANNOTATION_POINT_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     }
 
     this.editData.hasMoved = true;

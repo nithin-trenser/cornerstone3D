@@ -63,6 +63,20 @@ enum Events {
   ANNOTATION_MODIFIED = 'CORNERSTONE_TOOLS_ANNOTATION_MODIFIED',
 
   /**
+   * Triggers on the eventTarget when an annotation point position is modified (on drag annotation)
+   * for typing your event listeners for this annotation modified event, and see what
+   * event detail is included in {@link EventTypes.AnnotationModifiedEventDetail | Annotation Modified Event Detail}.
+   */
+  ANNOTATION_POINT_MODIFIED = 'CORNERSTONE_TOOLS_ANNOTATION_POINT_MODIFIED',
+
+  /**
+   * Triggers on the eventTarget when an annotation text box position is modified (on drag annotation)
+   * for typing your event listeners for this annotation modified event, and see what
+   * event detail is included in {@link EventTypes.AnnotationModifiedEventDetail | Annotation Modified Event Detail}.
+   */
+  ANNOTATION_TEXT_BOX_MODIFIED = 'CORNERSTONE_TOOLS_ANNOTATION_TEXT_BOX_MODIFIED',
+
+  /**
    * Triggers on the eventTarget when an annotation is removed from the annotations manager.
    * Make use of {@link EventTypes.AnnotationRemovedEventType | Annotation Removed Event Type}
    * for typing your event listeners for this annotation removed event, and see what

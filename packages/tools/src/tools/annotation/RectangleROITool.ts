@@ -5,6 +5,8 @@ import {
   VolumeViewport,
   utilities as csUtils,
   getEnabledElementByViewportId,
+  triggerEvent,
+  eventTarget,
 } from '@cornerstonejs/core';
 import type { Types } from '@cornerstonejs/core';
 
@@ -395,6 +397,8 @@ class RectangleROITool extends AnnotationTool {
       worldPosition[2] += worldPosDelta[2];
 
       textBox.hasMoved = true;
+      const eventType = Events.ANNOTATION_TEXT_BOX_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     } else if (handleIndex === undefined) {
       // Drag mode - Moving tool, so move all points by the world points delta
       const { deltaPoints } = eventDetail as EventTypes.MouseDragEventDetail;
@@ -408,6 +412,8 @@ class RectangleROITool extends AnnotationTool {
         point[2] += worldPosDelta[2];
       });
       annotation.invalidated = true;
+      const eventType = Events.ANNOTATION_POINT_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     } else {
       // Moving handle.
       const { currentPoints } = eventDetail;
@@ -472,6 +478,8 @@ class RectangleROITool extends AnnotationTool {
           break;
       }
       annotation.invalidated = true;
+      const eventType = Events.ANNOTATION_POINT_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     }
 
     this.editData.hasMoved = true;

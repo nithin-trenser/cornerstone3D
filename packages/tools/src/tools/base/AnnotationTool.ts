@@ -118,6 +118,16 @@ abstract class AnnotationTool extends AnnotationDisplayTool {
     triggerAnnotationModified(annotation, viewport.element);
   }
 
+  public static setProperty(annotationBaseData, property) {
+    for (const [key, value] of Object.entries(property)) {
+      annotationBaseData[key] = value;
+    }
+  }
+
+  public static getProperty(annotationBaseData, propertyName) {
+    return annotationBaseData[propertyName];
+  }
+
   static toolName;
   // ===================================================================
   // Abstract Methods - Must be implemented.

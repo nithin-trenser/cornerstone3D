@@ -1,5 +1,10 @@
 import { vec2, vec3 } from 'gl-matrix';
-import { getEnabledElement, utilities as csUtils } from '@cornerstonejs/core';
+import {
+  getEnabledElement,
+  utilities as csUtils,
+  triggerEvent,
+  eventTarget,
+} from '@cornerstonejs/core';
 import type { Types } from '@cornerstonejs/core';
 
 import { getCalibratedLengthUnitsAndScale } from '../../utilities/getCalibratedUnits';
@@ -569,6 +574,8 @@ class BidirectionalTool extends AnnotationTool {
     triggerAnnotationRenderForViewportIds(viewportIdsToRender);
 
     this.editData.hasMoved = true;
+    const eventType = Events.ANNOTATION_POINT_MODIFIED;
+    triggerEvent(eventTarget, eventType, { annotation });
   };
 
   /**
@@ -602,6 +609,8 @@ class BidirectionalTool extends AnnotationTool {
       worldPosition[2] += worldPosDelta[2];
 
       textBox.hasMoved = true;
+      const eventType = Events.ANNOTATION_TEXT_BOX_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     } else if (handleIndex === undefined) {
       // Moving tool
       const { deltaPoints } = eventDetail;
@@ -614,9 +623,13 @@ class BidirectionalTool extends AnnotationTool {
         point[2] += worldPosDelta[2];
       });
       annotation.invalidated = true;
+      const eventType = Events.ANNOTATION_POINT_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     } else {
       this._dragModifyHandle(evt);
       annotation.invalidated = true;
+      const eventType = Events.ANNOTATION_POINT_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     }
 
     triggerAnnotationRenderForViewportIds(viewportIdsToRender);

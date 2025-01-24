@@ -5,6 +5,8 @@ import {
   VolumeViewport,
   utilities as csUtils,
   getEnabledElementByViewportId,
+  triggerEvent,
+  eventTarget,
 } from '@cornerstonejs/core';
 import type { Types } from '@cornerstonejs/core';
 
@@ -429,7 +431,8 @@ class CircleROITool extends AnnotationTool {
     annotation.invalidated = true;
 
     this.editData.hasMoved = true;
-
+    const eventType = Events.ANNOTATION_POINT_MODIFIED;
+    triggerEvent(eventTarget, eventType, { annotation });
     triggerAnnotationRenderForViewportIds(viewportIdsToRender);
   };
 
@@ -460,6 +463,8 @@ class CircleROITool extends AnnotationTool {
       worldPosition[2] += worldPosDelta[2];
 
       textBox.hasMoved = true;
+      const eventType = Events.ANNOTATION_TEXT_BOX_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     } else if (handleIndex === undefined) {
       // Moving tool
       const { deltaPoints } = eventDetail;
@@ -473,9 +478,13 @@ class CircleROITool extends AnnotationTool {
         point[2] += worldPosDelta[2];
       });
       annotation.invalidated = true;
+      const eventType = Events.ANNOTATION_POINT_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     } else {
       this._dragHandle(evt);
       annotation.invalidated = true;
+      const eventType = Events.ANNOTATION_POINT_MODIFIED;
+      triggerEvent(eventTarget, eventType, { annotation });
     }
 
     const enabledElement = getEnabledElement(element);
