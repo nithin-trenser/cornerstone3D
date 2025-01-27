@@ -172,6 +172,18 @@ type AnnotationLockChangeEventDetail = {
   locked: Array<string>;
 };
 
+/**
+ * The data that is passed to the event handler when an annotation lock status changes.
+ */
+type AnnotationDirtyChangeEventDetail = {
+  // List of instances changed to dirty state by the last operation.
+  added: Array<string>;
+  // List of instances removed from dirty state by the last operation.
+  removed: Array<string>;
+  // Updated list of currently dirty instances
+  dirty: Array<string>;
+};
+
 type AnnotationVisibilityChangeEventDetail = {
   // List of instances uids changed to NOT visible (hidden) state by the last operation.
   lastHidden: Array<string>;
@@ -535,6 +547,12 @@ type AnnotationLockChangeEventType =
   Types.CustomEventType<AnnotationLockChangeEventDetail>;
 
 /**
+ * The AnnotationDirtyChange event type
+ */
+type AnnotationDirtyChangeEventType =
+  Types.CustomEventType<AnnotationDirtyChangeEventDetail>;
+
+/**
  * The AnnotationVisibilityChange event type
  */
 type AnnotationVisibilityChangeEventType =
@@ -723,6 +741,8 @@ export type {
   AnnotationLockChangeEventDetail,
   AnnotationVisibilityChangeEventDetail,
   AnnotationLockChangeEventType,
+  AnnotationDirtyChangeEventDetail,
+  AnnotationDirtyChangeEventType,
   AnnotationVisibilityChangeEventType,
   AnnotationInterpolationCompletedEventDetail,
   AnnotationInterpolationCompletedEventType,

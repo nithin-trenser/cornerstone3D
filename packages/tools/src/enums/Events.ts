@@ -125,6 +125,13 @@ enum Events {
   ANNOTATION_INTERPOLATION_PROCESS_COMPLETED = 'CORNERSTONE_TOOLS_ANNOTATION_INTERPOLATION_PROCESS_COMPLETED',
 
   /**
+   * Triggers on the eventTarget when an annotation is rendered.
+   * Make use of {@link EventTypes.AnnotationDirtyChangeEventType | Annotation Rendered Event Type}
+   * for typing your event listeners for this annotation rendered event, and see what
+   * event detail is included in {@link EventTypes.AnnotationDirtyChangeEventDetail | Annotation Rendered Event Detail}.
+   */
+  ANNOTATION_DIRTY_STATE_CHANGE = 'CORNERSTONE_ANNOTATION_DIRTY_STATE_CHANGE',
+  /**
    * Triggers on the eventTarget when interpolated annotations are removed.
    * Make use of {@link EventTypes.AnnotationInterpolationRemovedEventType | Annotation Interpolation Removed Event Type}
    * for typing your event listeners for this interpolated annotation removed event, and see what
