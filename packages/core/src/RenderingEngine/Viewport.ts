@@ -105,6 +105,7 @@ class Viewport {
 
   protected flipHorizontal = false;
   protected flipVertical = false;
+  protected aspectRatio = [1, 1, 1];
   public isDisabled: boolean;
   /** Record the rendering status, mostly for testing purposes, but can also
    * be useful for knowing things like whether the viewport is initialized
@@ -2201,6 +2202,14 @@ class Viewport {
    */
   public setDataIds(_imageIds: string[], _options?: DataSetOptions) {
     throw new Error('Unsupported operatoin setDataIds');
+  }
+
+  public setAspectRatio(aspectRatio) {
+    this.aspectRatio = aspectRatio;
+  }
+
+  public getAspectRatio() {
+    return this.aspectRatio;
   }
 }
 

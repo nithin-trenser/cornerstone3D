@@ -897,7 +897,11 @@ abstract class BaseVolumeViewport extends Viewport {
           [-viewPlaneNormal[0], -viewPlaneNormal[1], -viewPlaneNormal[2]],
           projectedDistance
         );
-        const focalShift = vec3.subtract(vec3.create(), newImagePositionPatient, focalPoint);
+        const focalShift = vec3.subtract(
+          vec3.create(),
+          newImagePositionPatient,
+          focalPoint
+        );
         const newPosition = vec3.add(vec3.create(), position, focalShift);
         // this.setViewReference({
         //   ...viewRef,
@@ -905,7 +909,7 @@ abstract class BaseVolumeViewport extends Viewport {
         // });
         this.setCamera({
           focalPoint: newImagePositionPatient as Point3,
-          position: newPosition as Point3
+          position: newPosition as Point3,
         });
         this.render();
         return;
@@ -1789,7 +1793,11 @@ abstract class BaseVolumeViewport extends Viewport {
 
     vtkCamera.setIsPerformingCoordinateTransformation?.(false);
 
-    return [worldCoord[0], worldCoord[1], worldCoord[2]];
+    return [
+      worldCoord[0] / this.aspectRatio[0],
+      worldCoord[1] / this.aspectRatio[1],
+      worldCoord[2] / this.aspectRatio[2],
+    ];
   };
 
   public canvasToWorldContextPool = (canvasPos: Point2): Point3 => {
@@ -1930,6 +1938,11 @@ abstract class BaseVolumeViewport extends Viewport {
    * @public
    */
   public worldToCanvasTiled = (worldPos: Point3): Point2 => {
+    const stretchedPoints = [
+      worldPos[0] * this.aspectRatio[0],
+      worldPos[1] * this.aspectRatio[1],
+      worldPos[2] * this.aspectRatio[2],
+    ];
     const vtkCamera = this.getVtkActiveCamera() as vtkSlabCameraType;
 
     /**
@@ -1963,7 +1976,7 @@ abstract class BaseVolumeViewport extends Viewport {
       offscreenMultiRenderWindow.getOpenGLRenderWindow();
     const size = openGLRenderWindow.getSize();
     const displayCoord = openGLRenderWindow.worldToDisplay(
-      ...worldPos,
+      ...stretchedPoints,
       renderer
     );
 

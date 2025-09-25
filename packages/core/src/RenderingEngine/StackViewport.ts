@@ -2986,10 +2986,19 @@ class StackViewport extends Viewport {
     // set clipping range back to original to be able
     vtkCamera.setClippingRange(crange[0], crange[1]);
 
-    return [worldCoord[0], worldCoord[1], worldCoord[2]];
+    return [
+      worldCoord[0] / this.aspectRatio[0],
+      worldCoord[1] / this.aspectRatio[1],
+      worldCoord[2] / this.aspectRatio[2],
+    ];
   };
 
   private worldToCanvasGPUContextPool = (worldPos: Point3): Point2 => {
+    const stretchedPoints = [
+      worldPos[0] * this.aspectRatio[0],
+      worldPos[1] * this.aspectRatio[1],
+      worldPos[2] * this.aspectRatio[2],
+    ];
     const renderer = this.getRenderer();
 
     // Temporary setting the clipping range to the distance and distance + 0.1
@@ -3009,9 +3018,9 @@ class StackViewport extends Viewport {
     const aspectRatio = width / height;
 
     const viewCoords = renderer.worldToView(
-      worldPos[0],
-      worldPos[1],
-      worldPos[2]
+      stretchedPoints[0],
+      stretchedPoints[1],
+      stretchedPoints[2]
     );
 
     const projCoords = renderer.viewToProjection(
@@ -3050,6 +3059,11 @@ class StackViewport extends Viewport {
   };
 
   private worldToCanvasGPUTiled = (worldPos: Point3): Point2 => {
+    const stretchedPoints = [
+      worldPos[0] * this.aspectRatio[0],
+      worldPos[1] * this.aspectRatio[1],
+      worldPos[2] * this.aspectRatio[2],
+    ];
     const renderer = this.getRenderer();
 
     // Temporary setting the clipping range to the distance and distance + 0.1
@@ -3068,7 +3082,7 @@ class StackViewport extends Viewport {
       offscreenMultiRenderWindow.getOpenGLRenderWindow();
     const size = openGLRenderWindow.getSize();
     const displayCoord = openGLRenderWindow.worldToDisplay(
-      ...worldPos,
+      ...stretchedPoints,
       renderer
     );
 
