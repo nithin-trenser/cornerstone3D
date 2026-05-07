@@ -150,12 +150,21 @@ async function createLabelmapsFromBufferInternal(
   // Pre-compute the sop UID to imageId index map so that in the for loop
   // we don't have to call metadataProvider.get() for each imageId over
   // and over again.
+  // Custom data providers may choose to use separate imageIds for multiframe images
+  // so SOPinstanceUID can be mapped to an array of imagedIds.
   const sopUIDImageIdIndexMap = referencedImageIds.reduce((acc, imageId) => {
     const { sopInstanceUID } = metadataProvider.get(
       'generalImageModule',
       imageId
     );
-    acc[sopInstanceUID] = imageId;
+    const existingImageId = acc[sopInstanceUID];
+    if (existingImageId === undefined) {
+      acc[sopInstanceUID] = imageId;
+    } else if (Array.isArray(existingImageId)) {
+      existingImageId.push(imageId);
+    } else {
+      acc[sopInstanceUID] = [existingImageId, imageId];
+    }
     return acc;
   }, {});
 

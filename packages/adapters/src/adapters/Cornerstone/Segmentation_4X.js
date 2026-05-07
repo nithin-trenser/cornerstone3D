@@ -1338,39 +1338,48 @@ export function getImageIdOfSourceImageBySourceImageSequence(
   const { ReferencedSOPInstanceUID, ReferencedFrameNumber } =
     SourceImageSequence;
 
-  const baseImageId = sopUIDImageIdIndexMap[ReferencedSOPInstanceUID];
+  // Custom data providers may choose to use separate imageIds for multiframe images
+  // so SOPinstanceUID can be mapped to an array of imagedIds.
+  const baseImageIds = sopUIDImageIdIndexMap[ReferencedSOPInstanceUID];
 
-  if (!baseImageId) {
+  if (!baseImageIds) {
     console.warn(
-      `No imageId found for SOPInstanceUID: ${ReferencedSOPInstanceUID}`
+      `No imageIds found for SOPInstanceUID: ${ReferencedSOPInstanceUID}`
     );
     return undefined;
   }
 
   if (ReferencedFrameNumber !== undefined) {
-    if (baseImageId.includes('frames/')) {
-      return baseImageId.replace(
+    const imageId = baseImageIds[ReferencedFrameNumber - 1];
+    if (imageId) {
+      return imageId;
+    }
+    if (baseImageIds.includes('frames/')) {
+      return baseImageIds.replace(
         /frames\/\d+/,
         `frames/${ReferencedFrameNumber}`
       );
-    } else if (baseImageId.includes('dicomfile:')) {
+    } else if (baseImageIds.includes('dicomfile:')) {
       // dicomfile base 1, despite having frame=
-      return baseImageId.replace(/frame=\d+/, `frame=${ReferencedFrameNumber}`);
-    } else if (baseImageId.includes('frame=')) {
-      return baseImageId.replace(
+      return baseImageIds.replace(
+        /frame=\d+/,
+        `frame=${ReferencedFrameNumber}`
+      );
+    } else if (baseImageIds.includes('frame=')) {
+      return baseImageIds.replace(
         /frame=\d+/,
         `frame=${ReferencedFrameNumber - 1}`
       );
     } else {
-      if (baseImageId.includes('wadors:')) {
-        return `${baseImageId}/frames/${ReferencedFrameNumber}`;
+      if (baseImageIds.includes('wadors:')) {
+        return `${baseImageIds}/frames/${ReferencedFrameNumber}`;
       } else {
-        return `${baseImageId}?frame=${ReferencedFrameNumber - 1}`;
+        return `${baseImageIds}?frame=${ReferencedFrameNumber - 1}`;
       }
     }
   }
 
-  return baseImageId;
+  return baseImageIds;
 }
 
 /**
@@ -1473,20 +1482,20 @@ export function getImageIdOfReferencedFrame(
   frameNumber,
   sopUIDImageIdIndexMap
 ) {
-  const baseImageId = sopUIDImageIdIndexMap[sopInstanceUid];
+  const baseImageIds = sopUIDImageIdIndexMap[sopInstanceUid];
 
-  if (!baseImageId) {
-    console.warn(`No imageId found for SOPInstanceUID: ${sopInstanceUid}`);
+  if (!baseImageIds) {
+    console.warn(`No imageIds found for SOPInstanceUID: ${sopInstanceUid}`);
     return undefined;
   }
 
   // Handle wadors format differently from others
-  if (baseImageId.includes('wadors:')) {
-    return `${baseImageId}/frames/${frameNumber}`;
+  if (baseImageIds.includes('wadors:')) {
+    return `${baseImageIds}/frames/${frameNumber}`;
   }
 
   // For all other formats use frame parameter
-  return `${baseImageId}?frame=${frameNumber - 1}`;
+  return `${baseImageIds}?frame=${frameNumber - 1}`;
 }
 
 /**
